@@ -1,18 +1,22 @@
 import { API_URL } from "../../constants.js";
 import { useState, useEffect } from "react";
-const PostsList = () => {
-  const [posts, setPosts] = useState([]);
+import { useParams, useNavigate, Link } from "react-router-dom";
+
+const PostsDetails = () => {
+  const [post, setPost] = useState(null);
+  const { id } = useParams();
+
   const [loading, setLoading] = useState(true);
   const [, setError] = useState(false);
 
   useEffect(() => {
-    async function loadPosts() {
+    async function fetchCurrentPost() {
       try {
         setLoading(true);
-        const response = await fetch(API_URL);
+        const response = await fetch(`${API_URL}/${id}`);
         if (response.ok) {
           const json = await response.json();
-          setPosts(json);
+          setPost(json);
         } else {
           throw response;
         }
@@ -23,21 +27,20 @@ const PostsList = () => {
         setLoading(false);
       }
     }
-    loadPosts();
-  }, []);
+    fetchCurrentPost();
+  }, [id]);
 
   if (loading) return <p>Loading...</p>;
 
   return (
     <div>
-      {posts.map((post) => (
-        <div key={post.id} className="post-container">
-          <h2>{post.title}</h2>
-          <p>{post.body}</p>
-        </div>
-      ))}
+      <div key={post.id} className="post-container">
+        <h2>{post.title}</h2>
+        <p>{post.body}</p>
+        <Link to="/">Back to posts</Link>
+      </div>
     </div>
   );
 };
 
-export default PostsList;
+export default PostsDetails;
