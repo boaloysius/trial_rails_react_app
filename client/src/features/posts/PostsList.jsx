@@ -1,5 +1,7 @@
 import { API_URL } from "../../constants.js";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 const PostsList = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +34,9 @@ const PostsList = () => {
     <div>
       {posts.map((post) => (
         <div key={post.id} className="post-container">
-          <h2>{post.title}</h2>
+          <h2>
+            <Link to={`/posts/${post.id}`}>{post.title}</Link>
+          </h2>
           <p>{post.body}</p>
         </div>
       ))}
