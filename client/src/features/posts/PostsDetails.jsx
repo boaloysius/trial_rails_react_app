@@ -5,6 +5,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 const PostsDetails = () => {
   const [post, setPost] = useState(null);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [, setError] = useState(false);
@@ -30,6 +31,18 @@ const PostsDetails = () => {
     fetchCurrentPost();
   }, [id]);
 
+  const deletePost = async () => {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      navigate("/");
+    } else {
+      console.log("Error occured");
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
 
   return (
@@ -38,6 +51,8 @@ const PostsDetails = () => {
         <h2>{post.title}</h2>
         <p>{post.body}</p>
         <Link to="/">Back to posts</Link>
+        {" | "}
+        <button onClick={deletePost}>Delete post</button>
       </div>
     </div>
   );
