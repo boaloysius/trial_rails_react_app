@@ -1,27 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../constants";
+import { createPost } from "../../services/postService";
 
-const NewPostForm = () => {
+const PostCreateForm = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const postData = { title, body };
 
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(postData),
-    });
-
-    if (response.ok) {
-      const { id } = await response.json();
+    try {
+      const postData = { title, body };
+      const { id } = await createPost(postData);
       navigate(`/posts/${id}`);
-    } else {
-      console.log("Error occured");
+    } catch (e) {
+      console.error("Couldn't create the post: ", e);
     }
   };
 
@@ -56,4 +50,4 @@ const NewPostForm = () => {
   );
 };
 
-export default NewPostForm;
+export default PostCreateForm;
