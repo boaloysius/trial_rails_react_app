@@ -50,6 +50,8 @@ const PostsDetails = () => {
       <div key={post.id} className="post-container">
         <h2>{post.title}</h2>
         <p>{post.body}</p>
+        <Link to={`/posts/${id}/edit`}>Edit posts</Link>
+        {" | "}
         <Link to="/">Back to posts</Link>
         {" | "}
         <button onClick={deletePost}>Delete post</button>
