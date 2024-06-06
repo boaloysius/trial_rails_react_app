@@ -1,6 +1,9 @@
-import { API_URL } from "../../constants.js";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import {
+  fetchAllPost,
+  deletePost as deletePostItem,
+} from "../../services/postService.js";
 
 const PostsList = () => {
   const [posts, setPosts] = useState([]);
@@ -11,16 +14,10 @@ const PostsList = () => {
     async function loadPosts() {
       try {
         setLoading(true);
-        const response = await fetch(API_URL);
-        if (response.ok) {
-          const json = await response.json();
-          setPosts(json);
-        } else {
-          throw response;
-        }
+        const data = await fetchAllPost();
+        setPosts(data);
       } catch (e) {
-        setError("An error occured");
-        console.log("An error occured, ", e);
+        setError(e);
       } finally {
         setLoading(false);
       }
@@ -29,14 +26,11 @@ const PostsList = () => {
   }, []);
 
   const deletePost = async (id) => {
-    const response = await fetch(`${API_URL}/${id}`, {
-      method: "DELETE",
-    });
-
-    if (response.ok) {
+    try {
+      await deletePostItem(id);
       setPosts(posts.filter((post) => post.id != id));
-    } else {
-      console.log("Error occured");
+    } catch (e) {
+      console.error("Failed to delete the post", e);
     }
   };
 

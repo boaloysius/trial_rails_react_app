@@ -1,6 +1,6 @@
-import { API_URL } from "../../constants.js";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { updatePost, fetchPost } from "../../services/postService.js";
 
 const PostEditForm = () => {
   const [post, setPost] = useState(null);
@@ -11,40 +11,29 @@ const PostEditForm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchCurrentPost() {
+    async function loadPost() {
       try {
         setLoading(true);
-        const response = await fetch(`${API_URL}/${id}`);
-        if (response.ok) {
-          const json = await response.json();
-          setPost(json);
-        } else {
-          throw response;
-        }
+        const data = await fetchPost(id);
+        setPost(data);
       } catch (e) {
-        setError("An error occured");
-        console.log("An error occured, ", e);
+        setError(e);
+        console.error("Couldn't fetch the post: ", e);
       } finally {
         setLoading(false);
       }
     }
-    fetchCurrentPost();
+    loadPost();
   }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(`${API_URL}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: post.title, body: post.body }),
-    });
-
-    if (response.ok) {
-      const { id } = await response.json();
+    try {
+      await updatePost(id, post);
       navigate(`/posts/${id}`);
-    } else {
-      console.log("Error occured");
+    } catch (e) {
+      console.error("Couldn't update the post: ", e);
     }
   };
 
