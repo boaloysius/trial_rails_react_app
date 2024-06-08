@@ -5,7 +5,7 @@ import { createPost } from "../../services/postService";
 const PostCreateForm = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -47,7 +47,6 @@ const PostCreateForm = () => {
               setImage(e.target.files[0]);
               console.log(e.target.files[0]);
             }}
-            required
           />
         </div>
         <div>

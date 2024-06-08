@@ -4,6 +4,7 @@ import {
   fetchPost,
   deletePost as deletePostItem,
 } from "../../services/postService.js";
+import "../../assets/global.css";
 
 const PostsDetails = () => {
   const [post, setPost] = useState(null);
@@ -43,6 +44,9 @@ const PostsDetails = () => {
     <div>
       <div key={post.id} className="post-container">
         <h2>{post.title}</h2>
+        {post.image_url && (
+          <img src={post.image_url} alt={post.title} className="post-image" />
+        )}
         <p>{post.body}</p>
         <Link to={`/posts/${id}/edit`}>Edit posts</Link>
         {" | "}
