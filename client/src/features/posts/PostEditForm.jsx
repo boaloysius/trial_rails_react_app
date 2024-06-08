@@ -28,9 +28,13 @@ const PostEditForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("post[title]", post.title);
+    formData.append("post[body]", post.body);
+    formData.append("post[image]", post.image);
 
     try {
-      await updatePost(id, post);
+      await updatePost(id, formData);
       navigate(`/posts/${id}`);
     } catch (e) {
       console.error("Couldn't update the post: ", e);
@@ -49,6 +53,19 @@ const PostEditForm = () => {
             type="text"
             value={post.title}
             onChange={(e) => setPost({ ...post, title: e.target.value })}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="imageInput">Image:</label>
+          <input
+            id="imageInput"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              setPost({ ...post, image: e.target.files[0] });
+              console.log(e.target.files[0]);
+            }}
             required
           />
         </div>

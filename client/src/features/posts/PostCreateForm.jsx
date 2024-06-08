@@ -5,14 +5,18 @@ import { createPost } from "../../services/postService";
 const PostCreateForm = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("post[title]", title);
+    formData.append("post[body]", body);
+    formData.append("post[image]", image);
 
     try {
-      const postData = { title, body };
-      const { id } = await createPost(postData);
+      const { id } = await createPost(formData);
       navigate(`/posts/${id}`);
     } catch (e) {
       console.error("Couldn't create the post: ", e);
@@ -30,6 +34,19 @@ const PostCreateForm = () => {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="imageInput">Image:</label>
+          <input
+            id="imageInput"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              setImage(e.target.files[0]);
+              console.log(e.target.files[0]);
+            }}
             required
           />
         </div>
