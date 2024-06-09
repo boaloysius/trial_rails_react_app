@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   # Api routes should in /api/v1
   namespace :api do
     namespace :v1 do
+      get 'search/posts'
       resources :posts
     end
   end

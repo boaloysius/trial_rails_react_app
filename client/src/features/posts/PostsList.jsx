@@ -1,30 +1,28 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import {
-  fetchAllPost,
-  deletePost as deletePostItem,
-} from "../../services/postService.js";
+import { deletePost as deletePostItem } from "../../services/postService.js";
 import "../../assets/global.css";
+
+import SearchBar from "./SearchBar.jsx";
+import usePostsData from "../../hooks/usePostsData";
+import useURLSearchParam from "../../hooks/useURLSearchParam";
 
 const PostsList = () => {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [, setError] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debounceSearchTerm, setDebounceSearchTerm] = useURLSearchParam("");
+
+  const {
+    posts: fetchedPosts,
+    loading,
+    error,
+  } = usePostsData(debounceSearchTerm);
 
   useEffect(() => {
-    async function loadPosts() {
-      try {
-        setLoading(true);
-        const data = await fetchAllPost();
-        setPosts(data);
-      } catch (e) {
-        setError(e);
-      } finally {
-        setLoading(false);
-      }
+    if (fetchedPosts) {
+      setPosts(fetchedPosts);
     }
-    loadPosts();
-  }, []);
+  }, [fetchedPosts]);
 
   const deletePost = async (id) => {
     try {
@@ -35,10 +33,24 @@ const PostsList = () => {
     }
   };
 
+  const handleImmediateChange = (searchValue) => {
+    setSearchTerm(searchValue);
+  };
+
+  const handleDebouncedSearchChange = (searchValue) => {
+    setDebounceSearchTerm(searchValue);
+  };
+
   if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error loading posts.</p>;
 
   return (
     <div>
+      <SearchBar
+        value={searchTerm}
+        onSearchChange={handleDebouncedSearchChange}
+        onImmediateChange={handleImmediateChange}
+      />
       {posts.map((post) => (
         <div key={post.id} className="post-container">
           <h2>
