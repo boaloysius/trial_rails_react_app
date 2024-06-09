@@ -1,7 +1,7 @@
-import { API_URL } from "../constants";
+import { POSTS_API_URL, SEARCH_API_URL } from "../constants";
 
 async function fetchAllPost() {
-  const response = await fetch(API_URL);
+  const response = await fetch(POSTS_API_URL);
   if (!response.ok) {
     throw new Error(response.statusText);
   } else {
@@ -10,7 +10,7 @@ async function fetchAllPost() {
 }
 
 async function fetchPost(id) {
-  const response = await fetch(`${API_URL}/${id}`);
+  const response = await fetch(`${POSTS_API_URL}/${id}`);
   if (!response.ok) {
     throw new Error(response.statusText);
   } else {
@@ -19,7 +19,7 @@ async function fetchPost(id) {
 }
 
 async function createPost(postData) {
-  const response = await fetch(API_URL, {
+  const response = await fetch(POSTS_API_URL, {
     method: "POST",
     body: postData,
   });
@@ -31,7 +31,7 @@ async function createPost(postData) {
 }
 
 async function updatePost(id, postData) {
-  const response = await fetch(`${API_URL}/${id}`, {
+  const response = await fetch(`${POSTS_API_URL}/${id}`, {
     method: "PUT",
     body: postData,
   });
@@ -43,7 +43,7 @@ async function updatePost(id, postData) {
 }
 
 async function deletePost(id) {
-  const response = await fetch(`${API_URL}/${id}`, {
+  const response = await fetch(`${POSTS_API_URL}/${id}`, {
     method: "DELETE",
   });
   if (!response.ok) {
@@ -57,4 +57,20 @@ async function deletePost(id) {
   return response.json();
 }
 
-export { fetchAllPost, fetchPost, createPost, updatePost, deletePost };
+async function searchPosts(query) {
+  const response = await fetch(`${SEARCH_API_URL}/posts/?q=${query}`);
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  } else {
+    return response.json();
+  }
+}
+
+export {
+  fetchAllPost,
+  fetchPost,
+  createPost,
+  updatePost,
+  deletePost,
+  searchPosts,
+};
